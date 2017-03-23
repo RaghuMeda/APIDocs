@@ -1,0 +1,126 @@
+# Example YAML to get you started quickly.
+# Be aware that YAML has indentation based scoping.
+# Code completion support is available so start typing for available options.
+swagger: '2.0'
+info:
+  title: Regions API
+  version: "0.1.0"
+  description: EPG Publishing -- Regions API 
+# the domain of the service
+host: contentepgdata.vision.bt.com
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /channelGroups
+produces:
+  - application/json
+# Describe your paths here
+paths:
+  /retrieveRegionsInfo:
+    # This is a HTTP operation
+    get:
+      summary: Regions info
+      description: Returns Regions for a given Channel group ID
+      parameters:
+        -
+          name: channelGroupID
+          in: query
+          description: channel group Id
+          required: true
+          type: string
+          format: string
+        - name: correlation Id
+          in: header
+          description: Transaction Identifier
+          required: true
+          type: string
+          format: string
+          default: xxxx
+      tags:
+        - Regions
+      # Expected responses for this operation:
+      responses:
+        200:
+          description: ChannelGroupInfo returning array of regions
+          schema:
+           $ref: '#/definitions/ChannelGroupInfo'
+           headers:
+            s-maxage: 
+             description: Duration in seconds that the response must be cached.For Logged in Users it should be 300 sec and for Anonymous users it should be 3600 sec
+             type: integer
+             default: 300
+            cache-control: 
+             description: may be cached in public shared caches
+             type: string
+             default: public
+            max-age: 
+             description: Indicates that the client is willing to accept a response whose age is no greater than the specified time in seconds
+             type: integer  
+             default: 300
+            no-transform:
+              description: no-transform directive indicates that intermediate cache or proxy MUST NOT change the header values set 
+              type: string
+              default: no-transform
+              
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+          
+definitions:
+  ChannelGroupInfo:
+    type: object
+    properties:
+      channelGroupId:
+        type: string
+        description: channel Group Id
+      channelGroupName: 
+        type: string
+        description: channel Group Name
+      regions:
+        type: array
+        items:
+           $ref: "#/definitions/Regions"
+      availableCountries:
+        type: array
+        items:
+           $ref: "#/definitions/AvailableCountries"
+      
+       
+  
+  Regions:
+    type: object
+    properties:
+      id: 
+        type: string
+        description: Region Id
+      title: 
+        type: string
+        description: Region Name
+        
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message: 
+        type: string
+      fields:
+        type: string
+        
+  AvailableCountries:
+    type: object
+    properties:
+      Name: 
+        type: string
+        description: Country Name
+      Code: 
+        type: string
+        description: Country Code
+  
+  
+
+      
+    
